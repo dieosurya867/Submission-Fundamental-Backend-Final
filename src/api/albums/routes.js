@@ -19,6 +19,21 @@ const routes = (handler) => [
     path: "/albums/{id}",
     handler: handler.deleteAlbumByIdHandler,
   },
+  {
+    method: 'POST',
+    path: '/albums/{id}/covers',
+    handler: handler.postUploadAlbumCoverHandler,
+    options: {
+      payload: {
+        maxBytes: 512000,
+        output: 'stream',
+        parse: true,
+        allow: 'multipart/form-data',
+      },
+      auth: 'openmusic_jwt',
+    },
+  },
+
 ];
 
 module.exports = routes;

@@ -1,10 +1,15 @@
 const { nanoid } = require("nanoid");
+const path = require('path');
+const fs = require('fs');
 
 const { AlbumValidator } = require("../../validator/music");
+const ClientError = require('../../exceptions/ClientError');
+
 
 class AlbumsHandler {
-  constructor(service) {
+  constructor(service, validator) {
     this._service = service;
+    this._validator = validator;
   }
 
   postAlbumHandler = async (request, h) => {
@@ -62,6 +67,32 @@ class AlbumsHandler {
       message: "Data Berhasil Dihapus",
     };
   };
+
+  postUploadAlbumCoverHandler = async (request, h) => {
+    const { cover } = request.payload;
+    const { id } = request.params;
+
+    const fileName = `${id}-${Date.now()}.jpg`;
+
+    const uploadPath = path.resolve(__dirname, '../../uploads', fileName);
+    const fileStream = fs.createWriteStream(uploadPath);
+    cover.pipe(fileStream);
+
+    await new Promise((resolve, reject) => {
+      cover.on('end', resolve);
+      cover.on('error', reject);
+    });
+
+    const coverUrl = `http://localhost:5000/uploads/${fileName}`;
+    await this._service.updateCoverAlbumById(id, coverUrl);
+
+    const response = h.response({
+      status: 'success',
+      message: 'Sampul berhasil diunggah',
+    });
+    response.code(201);
+    return response;
+  }
 }
 
 module.exports = AlbumsHandler;
