@@ -1,4 +1,5 @@
 
+
 class ExportsHandler {
     constructor(service, playlistsService, validator) {
         this._service = service;
@@ -6,23 +7,24 @@ class ExportsHandler {
         this._validator = validator;
     }
 
-    async postExportPlaylistHandler(request, h) {
+    postExportPlaylistHandler = async (request, h) => {
         this._validator.validateExportPayload(request.payload);
-        const { id: credentialId } = request.auth.credentials;
-        const { playlistId } = request.params;
         const { targetEmail } = request.payload;
+        const { id: playlistId } = request.params;
+        const { id: ownerId } = request.auth.credentials;
 
-        await this._playlistsService.verifyPlaylistOwner(playlistId, credentialId);
+        await this._playlistsService.verifyPlaylistOwner(playlistId, ownerId);
 
         const message = {
             playlistId,
             targetEmail,
         };
-        await this._service.sendMessage('export:playlists', JSON.stringify(message));
+
+        await this._service.sendMessage(message);
 
         const response = h.response({
             status: 'success',
-            message: 'Permintaan ekspor playlist dalam antrean',
+            message: 'Permintaan Anda sedang kami proses',
         });
         response.code(201);
         return response;

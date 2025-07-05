@@ -12,15 +12,29 @@ const authentications = require("./api/authentications");
 const playlists = require("./api/playlists");
 const collaborations = require("./api/collaborations");
 const activities = require("./api/activities");
+const exportsPlugin = require('./api/exports');
 
 // uploads
 const AlbumsService = require("./api/albums/service");
 const StorageService = require("./storage/service");
 const MusicValidator = require("./validator/music");
+
+//Export
+const ExportService = require("./api/exports/service")
+const PlaylistsService = require('./api/playlists/service');
+const ExportsValidator = require("./validator/exports")
+const CollaborationsService = require("./api/collaborations/service")
+const ActivitiesService = require("./api/activities/service")
+
+//file foto
 const path = require("path");
 
 const init = async () => {
   const albumsService = new AlbumsService();
+  const exportService = new ExportService();
+  const collaborationsService = new CollaborationsService();
+  const activitiesService = new ActivitiesService();
+  const playlistsService = new PlaylistsService(collaborationsService, activitiesService);
   const storageService = new StorageService(
     path.resolve(__dirname, "api/uploads/file/images")
   );
@@ -75,6 +89,14 @@ const init = async () => {
         activitiesService: server.app.activitiesService,
       },
     },
+    {
+      plugin: exportsPlugin,
+      options: {
+        service: exportService,
+        playlistsService,
+        validator: ExportsValidator,
+      },
+    }
   ]);
 
   server.ext("onPreResponse", (request, h) => {
