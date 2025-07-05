@@ -13,7 +13,17 @@ const playlists = require("./api/playlists");
 const collaborations = require("./api/collaborations");
 const activities = require("./api/activities");
 
+// uploads
+const AlbumsService = require("./api/albums/service");
+const StorageService = require("./storage/service");
+const MusicValidator = require("./validator/music");
+const path = require("path");
+
 const init = async () => {
+  const albumsService = new AlbumsService();
+  const storageService = new StorageService(
+    path.resolve(__dirname, "api/uploads/file/images")
+  );
   const server = Hapi.server({
     port: process.env.PORT,
     host: process.env.HOST,
@@ -47,6 +57,11 @@ const init = async () => {
     },
     {
       plugin: albums,
+      options: {
+        service: albumsService,
+        storageService: storageService,
+        validator: MusicValidator,
+      },
     },
     {
       plugin: songs,

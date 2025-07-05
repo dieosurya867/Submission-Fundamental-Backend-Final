@@ -17,6 +17,7 @@ const SongPayloadSchema = Joi.object({
 const ImageHeadersSchema = Joi.object({
   "content-type": Joi.string()
     .valid(
+      "image/jpg",
       "image/apng",
       "image/avif",
       "image/gif",

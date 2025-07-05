@@ -68,38 +68,21 @@ class AlbumsHandler {
     };
   };
 
-  postUploadAlbumCoverHandler = async (request, h) => {
+  postUploadImageHandler = async (request, h) => {
     const { cover } = request.payload;
-    const { id } = request.params;
+    const { id: albumId } = request.params;
 
-    this._validator.validateAlbumCoverHeaders(request.payload);
+    this._validator.validateImageHeaders(cover.hapi.headers);
+    const filename = await this._storageService.writeFile(cover, cover.hapi);
+    const fileLocation = `http://${process.env.HOST}:${process.env.PORT}/upload/images/${filename}`;
 
-    const mimeType = cover.hapi.headers['content-type'];
-    const extensionMap = {
-      'image/jpeg': '.jpg',
-      'image/png': '.png',
-      'image/webp': '.webp',
-      'image/svg+xml': '.svg',
-    };
-
-    const extension = extensionMap[mimeType];
-    const fileName = `${id}-${Date.now()}${extension}`;
-
-    const uploadPath = path.resolve(__dirname, '../../uploads', fileName);
-    const fileStream = fs.createWriteStream(uploadPath);
-    cover.pipe(fileStream);
-
-    await new Promise((resolve, reject) => {
-      cover.on('end', resolve);
-      cover.on('error', reject);
-    });
-
-    const coverUrl = `http://localhost:5000/uploads/${fileName}`;
-    await this._service.updateCoverAlbumById(id, coverUrl);
+    await this._service.updateCoverAlbumById(albumId, fileLocation);
 
     const response = h.response({
-      status: 'success',
-      message: 'Sampul berhasil diunggah',
+      status: "success",
+      data: {
+        fileLocation,
+      },
     });
     response.code(201);
     return response;
