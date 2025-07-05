@@ -72,7 +72,18 @@ class AlbumsHandler {
     const { cover } = request.payload;
     const { id } = request.params;
 
-    const fileName = `${id}-${Date.now()}.jpg`;
+    this._validator.validateAlbumCoverHeaders(request.payload);
+
+    const mimeType = cover.hapi.headers['content-type'];
+    const extensionMap = {
+      'image/jpeg': '.jpg',
+      'image/png': '.png',
+      'image/webp': '.webp',
+      'image/svg+xml': '.svg',
+    };
+
+    const extension = extensionMap[mimeType];
+    const fileName = `${id}-${Date.now()}${extension}`;
 
     const uploadPath = path.resolve(__dirname, '../../uploads', fileName);
     const fileStream = fs.createWriteStream(uploadPath);
@@ -92,7 +103,7 @@ class AlbumsHandler {
     });
     response.code(201);
     return response;
-  }
+  };
 }
 
 module.exports = AlbumsHandler;

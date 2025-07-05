@@ -74,6 +74,15 @@ const init = async () => {
       return newResponse;
     }
 
+    // if (response.isBoom && response.output.statusCode === 415) {
+    //   const newResponse = h.response({
+    //     status: 'fail',
+    //     message: 'Format file tidak didukung. Harap unggah gambar JPG atau PNG.',
+    //   });
+    //   newResponse.code(400);
+    //   return newResponse;
+    // }
+
     if (response.isBoom) {
       const { statusCode, payload } = response.output;
       if (statusCode >= 400 && statusCode < 500) {
