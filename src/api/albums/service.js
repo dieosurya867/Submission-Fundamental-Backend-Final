@@ -65,12 +65,15 @@ class AlbumsService {
   }
 
   async updateCoverAlbumById(id, coverUrl) {
+    console.log('updateCoverAlbumById called with:', { id, coverUrl });
     const query = {
       text: 'UPDATE albums SET cover_url = $1 WHERE id = $2 RETURNING id',
       values: [coverUrl, id],
     };
     const result = await this._pool.query(query);
+    console.log('DB update result:', result.rowCount, result.rows);
     if (!result.rows.length) {
+      console.error('Album not found for updateCoverAlbumById');
       throw new NotFoundError('Album tidak ditemukan');
     }
   }
