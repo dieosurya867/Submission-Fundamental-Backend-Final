@@ -34,16 +34,14 @@ const routes = (handler) => [
     },
   },
   {
-    method: "GET",
-    path: "/upload/{param*}",
+    method: 'GET',
+    path: '/upload/images/{param*}',
     handler: {
       directory: {
-        path: path.resolve(__dirname, "file"),
+        path: path.resolve(__dirname, '../../../uploads/images'),
       },
     },
   },
-
-
 ];
 
 module.exports = routes;

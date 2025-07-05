@@ -75,13 +75,13 @@ class AlbumsHandler {
     const { id: albumId } = request.params;
     try {
       const filename = await this._storageService.writeFile(cover, cover.hapi);
-      const fileLocation = `http://${process.env.HOST}:${process.env.PORT}/upload/images/${filename}`;
-      await this._service.updateCoverAlbumById(albumId, fileLocation);
+      const coverUrl = `http://${process.env.HOST}:${process.env.PORT}/upload/${fileName}`;
+      await this._service.updateCoverAlbumById(albumId, coverUrl);
       const response = h.response({
         status: "success",
         message: "Sampul berhasil diunggah",
         data: {
-          coverUrl: fileLocation,
+          coverUrl: coverUrl,
         },
       });
       response.code(201);

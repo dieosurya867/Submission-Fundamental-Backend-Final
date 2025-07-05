@@ -89,14 +89,23 @@ const init = async () => {
       return newResponse;
     }
 
-    // if (response.isBoom && response.output.statusCode === 415) {
-    //   const newResponse = h.response({
-    //     status: 'fail',
-    //     message: 'Format file tidak didukung. Harap unggah gambar JPG atau PNG.',
-    //   });
-    //   newResponse.code(400);
-    //   return newResponse;
-    // }
+    if (response.isBoom && response.output.statusCode === 415) {
+      const newResponse = h.response({
+        status: 'fail',
+        message: 'Format file tidak didukung. Harap unggah file gambar yang didukung.',
+      });
+      newResponse.code(400);
+      return newResponse;
+    }
+
+    if (response.isBoom && response.output.statusCode === 413) {
+      const newResponse = h.response({
+        status: 'fail',
+        message: 'Ukuran file terlalu besar. Maksimal 512KB.',
+      });
+      newResponse.code(413);
+      return newResponse;
+    }
 
     if (response.isBoom) {
       const { statusCode, payload } = response.output;
