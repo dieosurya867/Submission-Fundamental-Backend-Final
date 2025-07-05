@@ -22,7 +22,7 @@ const MusicValidator = require("./validator/music");
 //Export
 const ExportService = require("./api/exports/service")
 const PlaylistsService = require('./api/playlists/service');
-const ExportsValidator = require("./validator/exports")
+const { ExportsValidator } = require('./validator/exports');
 const CollaborationsService = require("./api/collaborations/service")
 const ActivitiesService = require("./api/activities/service")
 

@@ -15,8 +15,17 @@ class ExportService {
     }
 
     async sendMessage(message) {
-        if (!this._channel) await this.connect();
-        this._channel.sendToQueue(this._queue, Buffer.from(JSON.stringify(message)));
+        console.log('[ExportService] Preparing to send message:', message);
+
+        if (!this._channel) {
+            console.log('[ExportService] No channel, connecting...');
+            await this.connect();
+        }
+
+        const buffered = Buffer.from(JSON.stringify(message));
+        this._channel.sendToQueue(this._queue, buffered);
+
+        console.log('[ExportService] Message sent to queue:', this._queue);
     }
 }
 
