@@ -28,10 +28,10 @@ const CollaborationsService = require("./api/collaborations/service")
 const ActivitiesService = require("./api/activities/service")
 
 //Likes
-const LikesService = require('./src/api/likes/service');
+const LikesService = require('./api/likes/service');
 
 // Cache
-const CacheService = require('./services/redis/CacheService');
+const CacheService = require('./redis/CacheService');
 
 const path = require("path");
 

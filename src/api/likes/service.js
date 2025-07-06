@@ -49,6 +49,7 @@ class LikesService {
                 text: 'SELECT COUNT(*) FROM user_album_likes WHERE album_id = $1',
                 values: [albumId],
             });
+
             const count = parseInt(result.rows[0].count, 10);
             await this._cacheService.set(`album_likes:${albumId}`, JSON.stringify(count), 1800);
             return { fromCache: false, likes: count };
