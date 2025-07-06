@@ -13,6 +13,7 @@ const playlists = require("./api/playlists");
 const collaborations = require("./api/collaborations");
 const activities = require("./api/activities");
 const exportsPlugin = require('./api/exports');
+const likes = require('./api/likes');
 
 // uploads
 const AlbumsService = require("./api/albums/service");
@@ -26,7 +27,12 @@ const { ExportsValidator } = require('./validator/exports');
 const CollaborationsService = require("./api/collaborations/service")
 const ActivitiesService = require("./api/activities/service")
 
-//file foto
+//Likes
+const LikesService = require('./src/api/likes/service');
+
+// Cache
+const CacheService = require('./services/redis/CacheService');
+
 const path = require("path");
 
 const init = async () => {
@@ -35,6 +41,8 @@ const init = async () => {
   const collaborationsService = new CollaborationsService();
   const activitiesService = new ActivitiesService();
   const playlistsService = new PlaylistsService(collaborationsService, activitiesService);
+  const cacheService = new CacheService();
+  const likesService = new LikesService(cacheService);
   const storageService = new StorageService(
     path.resolve(__dirname, "api/uploads/file/images")
   );
@@ -96,7 +104,14 @@ const init = async () => {
         playlistsService,
         validator: ExportsValidator,
       },
-    }
+    },
+    {
+      plugin: likes,
+      options: {
+        service: likesService,
+        albumsService: albumsService,
+      },
+    },
   ]);
 
   server.ext("onPreResponse", (request, h) => {
