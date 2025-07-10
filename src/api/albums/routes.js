@@ -22,7 +22,7 @@ const routes = (handler) => [
   },
   {
     method: "POST",
-    path: '/albums/{id}/covers',
+    path: "/albums/{id}/covers",
     handler: handler.postUploadImageHandler,
     options: {
       payload: {
@@ -34,11 +34,11 @@ const routes = (handler) => [
     },
   },
   {
-    method: 'GET',
-    path: '/upload/images/{param*}',
+    method: "GET",
+    path: "/upload/images/{param*}",
     handler: {
       directory: {
-        path: path.resolve(__dirname, '../../../uploads/images'),
+        path: path.resolve(__dirname, "../uploads/file/images"),
       },
     },
   },
